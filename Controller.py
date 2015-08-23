@@ -1,8 +1,8 @@
 #!/usr/bin/python
-"""RobotController.
+"""Controller.
 
 Usage:
-    RobotController.py [options]...
+    Controller.py [options]...
 
 Options:
     -h -? --help                     Show this screen.
@@ -16,11 +16,8 @@ Options:
 """
 import pygame
 from pygame.locals import *
-from glob import glob
 import time
-import serial
-import os
-import sys
+import requests
 from math import pi
 from docopt import docopt
 
@@ -45,21 +42,6 @@ class Robot(object):
       self.mTurnSpeed = 150
     self.mDisplay = pygame.display.set_mode((100,100))
     pygame.display.update()
-    #self.ConnectToSerial()
-
-  ##############################################################################
-  def ConnectToSerial(self):
-
-    for ttyName in glob('/dev/ttyACM*'):
-      try:
-       self.mSerial = serial.Serial(ttyName, 115200, timeout=.1)
-       print 'Connected on to motor controller on', ttyName
-       return
-      except:
-        pass
-    else:
-      print 'Serial Connection could not be established'
-      exit()
 
   ##############################################################################
   def JoystickMove(self, LeftStick, RightStick):
@@ -118,13 +100,8 @@ class Robot(object):
   ##############################################################################
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
-    print '!'+str(motor1)+','+str(motor2)+','+str(motor3)+'\n'
-    try:
-      self.mSerial.write('!'+str(motor1)+','+str(motor2)+','+str(motor3)+'\n')
-      self.mSerial.flush()
-    except:
-      #self.ConnectToSerial()
-      pass
+    payload = {'motor1': motor1, 'motor2': motor2, 'motor3':motor3}
+    requests.post("http://0.0.0.0:8080", data=payload)
 
 ################################################################################
 ################################################################################
