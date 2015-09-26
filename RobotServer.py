@@ -22,6 +22,7 @@ class Drive:
   def ConnectToSerial(self):
     for ttyName in glob('/dev/ttyACM*'):
       try:
+       print 'trying motor controller on', ttyName
        self.mSerial = serial.Serial(ttyName, 115200, timeout=.1)
        print 'Connected on to motor controller on', ttyName
        return
@@ -34,13 +35,12 @@ class Drive:
 
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
-    print '!' + motor1 + ',' + motor2 + ',' + motor3 + '\n'
     try:
-      self.mSerial.write('!' + motor1 + ',' + motor2 + ',' + motor3 + '\n')
+      print '!' + motor1 + ',' + motor2 + ',' + motor3 + '\n'
+      self.mSerial.write('!' + str(motor1) + ',' + str(motor2) + ',' + str(motor3) + '\n')
       self.mSerial.flush()
     except:
       self.ConnectToSerial()
-      pass
 
 ################################################################################
 ################################################################################

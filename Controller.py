@@ -100,8 +100,11 @@ class Robot(object):
   ##############################################################################
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
-    payload = {'motor1': motor1, 'motor2': motor2, 'motor3':motor3}
-    requests.post("http://0.0.0.0:8080", data=payload)
+    try:
+      payload = {'motor1': motor1, 'motor2': motor2, 'motor3':motor3}
+      requests.post("http://0.0.0.0:8080", data=payload)
+    except:
+      print "Send Failed"
 
 ################################################################################
 ################################################################################
@@ -109,18 +112,18 @@ if __name__ == "__main__":
   inputArguments = docopt(__doc__, version =0.1)
   clock = pygame.time.Clock()
   robot = Robot(inputArguments)
-  pygame.joystick.init()
-  joystick = pygame.joystick.Joystick(0)
-  joystick.init()
+  #pygame.joystick.init()
+  #joystick = pygame.joystick.Joystick(0)
+  #joystick.init()
 
   while True:
     try:
       clock.tick(60)
       Keys = pygame.key.get_pressed()
       robot.Move(Keys)
-      LeftStick = joystick.get_axis(1)
-      RightStick = joystick.get_axis(3)
-      robot.JoystickMove(LeftStick, RightStick)
+      #LeftStick = joystick.get_axis(1)
+      #RightStick = joystick.get_axis(3)
+      #robot.JoystickMove(LeftStick, RightStick)
       pygame.event.pump() # process event queue
 
     except KeyboardInterrupt:
