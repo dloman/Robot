@@ -1,27 +1,21 @@
 #!/usr/bin/python
 from glob import glob
+from twisted.internet.protocol import Protocol, Factory
+from twisted.internet import reactor
 import serial
-import web
-
-urls = ('/(.*)', 'Drive')
-app = web.application(urls, globals())
 
 ###############################################################################
 ###############################################################################
-class Drive:
-  ##############################################################################
+class Robot(Protocol):
   def __init__(self):
-    self.ConnectToSerial()
-
-  ##############################################################################
-  def POST(self, *args,**kwargs):
-    Data = web.input()
-    self.WriteMotors(Data['motor1'], Data['motor2'], Data['motor3'])
+    pass
+    #self.ConnectToSerial()
 
   ##############################################################################
   def ConnectToSerial(self):
     for ttyName in glob('/dev/ttyACM*'):
       try:
+       print 'trying motor controller on', ttyName
        self.mSerial = serial.Serial(ttyName, 115200, timeout=.1)
        print 'Connected on to motor controller on', ttyName
        return
@@ -42,14 +36,25 @@ class Drive:
       self.ConnectToSerial()
       pass
 
+
+  ##############################################################################
+  def connectionMade(self):
+    print "New Client Connected"
+
+  ##############################################################################
+  def connectionLost(self, reason):
+    print 'Connection Lost ', reason
+
+  ##############################################################################
+  def dataReceived(self, data):
+    print data
+    self.transport.write(data)
+
 ################################################################################
 ################################################################################
 if __name__ == "__main__":
-  web.config.debug = False
-  try:
-    app.run()
-  except:
-    print 'webpy didnt work'
-    exit()
-
+  factory = Factory()
+  factory.protocol = Robot
+  reactor.listenTCP(8080, factory)
+  reactor.run()
 
