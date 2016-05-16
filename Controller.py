@@ -119,7 +119,10 @@ class Robot(object):
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
     if self.mSocket:
-      self.mSocket.send(str(motor1) + ',' + str(motor2) + ',' + str(motor3)+'\n')
+      try:
+        self.mSocket.send(str(motor1) + ',' + str(motor2) + ',' + str(motor3)+'\n')
+      except:
+        self.setupSocket()
     else:
       self.setupSocket()
 
