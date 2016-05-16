@@ -9,7 +9,7 @@ import serial
 class Robot(Protocol):
   def __init__(self):
     pass
-    #self.ConnectToSerial()
+    self.ConnectToSerial()
 
   ##############################################################################
   def ConnectToSerial(self):
@@ -20,21 +20,19 @@ class Robot(Protocol):
        print 'Connected on to motor controller on', ttyName
        return
       except:
+        self.mSerial = None
         pass
-    else:
-      print 'Serial Connection could not be established'
-      return
-      exit()
 
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
     try:
-      self.mSerial.write('!' + motor1 + ',' + motor2 + ',' + motor3 + '\n')
-      self.mSerial.flush()
+      if mSerial:
+        self.mSerial.write('!' + motor1 + ',' + motor2 + ',' + motor3 + '\n')
+        self.mSerial.flush()
+      else:
+        self.ConnectToSerial()
     except:
       self.ConnectToSerial()
-      pass
-
 
   ##############################################################################
   def connectionMade(self):
