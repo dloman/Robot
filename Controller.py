@@ -53,8 +53,9 @@ class Robot(object):
   def setupSocket(self):
     try:
       self.mSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      self.mSocket.connect(('localhost', 8080))
+      self.mSocket.connect(('barlek.internal.sbhackerspace.com', 8080))
     except:
+      print 'socket error retry in 1 second'
       time.sleep(1)
       self.mSocket = None
 
@@ -69,7 +70,7 @@ class Robot(object):
     motor2 += int(self.mTurnSpeed * (RightStick))
     motor3 += int(self.mTurnSpeed * (RightStick))
     self.WriteMotors(motor1, motor2, motor3)
-    if time.time() - self.mLastUpdateTime > 100:
+    if time.time() - self.mLastUpdateTime > 10:
       pygame.joystick.quit()
       gJoystick = None
 
