@@ -28,7 +28,6 @@ class Robot(Protocol):
 
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
-    print '!' + motor1 + ',' + motor2 + ',' + motor3 + '\n'
     try:
       self.mSerial.write('!' + motor1 + ',' + motor2 + ',' + motor3 + '\n')
       self.mSerial.flush()
@@ -39,16 +38,18 @@ class Robot(Protocol):
 
   ##############################################################################
   def connectionMade(self):
-    print "New Client Connected"
+    pass
 
   ##############################################################################
   def connectionLost(self, reason):
-    print 'Connection Lost ', reason
+    pass
 
   ##############################################################################
   def dataReceived(self, data):
-    print data
-    self.transport.write(data)
+    data = data.strip('\n')
+    data = data.split(',')
+    if len(data) == 3:
+      self.WriteMotors(data[0], data[1], data[2])
 
 ################################################################################
 ################################################################################
