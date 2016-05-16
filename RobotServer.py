@@ -26,7 +26,7 @@ class Robot(Protocol):
   ##############################################################################
   def WriteMotors(self, motor1, motor2, motor3):
     try:
-      if mSerial:
+      if self.mSerial:
         self.mSerial.write('!' + motor1 + ',' + motor2 + ',' + motor3 + '\n')
         self.mSerial.flush()
       else:

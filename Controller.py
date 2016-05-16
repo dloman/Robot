@@ -70,11 +70,11 @@ class Robot(object):
     motor2 += int(self.mTurnSpeed * (RightStick))
     motor3 += int(self.mTurnSpeed * (RightStick))
     self.WriteMotors(motor1, motor2, motor3)
-    if time.time() - self.mLastUpdateTime > 10:
+    if time.time() - self.mLastUpdateTime > 300:
       pygame.joystick.quit()
-      gJoystick = None
-
-
+      return True
+    else:
+      return False
 
   ##############################################################################
   def Move(self, Keys):
@@ -170,7 +170,8 @@ if __name__ == "__main__":
       if joystick:
         LeftStick = joystick.get_axis(1)
         RightStick = joystick.get_axis(3)
-        joystick = robot.JoystickMove(LeftStick, RightStick)
+        if robot.JoystickMove(LeftStick, RightStick):
+          joystick = None
         if subprocess.check_output(['hidd', '--show']) == '':
           print 'reconnecting'
           joystick = getJoystick()
